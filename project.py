@@ -105,12 +105,12 @@ def new_task(tasks: list) -> Task:
                     if 0 < priority < 6:
                         current_ids = []
                         for task in tasks:
-                            current_ids.append(task.id)
+                            current_ids.append(task.the_id)
 
-                        id = 0
-                        while id in current_ids: id += 1
+                        the_id = 0
+                        while the_id in current_ids: the_id += 1
 
-                        return Task(name, priority, id)
+                        return Task(name, priority, the_id)
                     else:
                         print("Priority is not 1 to 5.")
                 except ValueError:
@@ -132,14 +132,14 @@ def remove_task(tasks: list) -> list:
     display_tasks(tasks)
 
     while True:
-        id = input("\nIntroduce the id of the task you want to remove: ").strip()
+        the_id = input("\nIntroduce the id of the task you want to remove: ").strip()
         try:
-            id = int(id)
+            the_id = int(the_id)
         except ValueError:
             print("The id is not a number.")
         else:
             for task in tasks:
-                if task.id == id:
+                if task.the_id == the_id:
                     index = tasks.index(task)
                     tasks.remove(tasks[index])
                     return tasks
@@ -155,7 +155,7 @@ def display_tasks(tasks: list):
     """
     desglosada = []
     for task in sort_by_priority(tasks):
-        desglosada.append([task.id, task.priority, task.name])
+        desglosada.append([task.the_id, task.priority, task.name])
 
     print(tabulate(desglosada, headers=["Id", "Priority", "Name"]))
 
@@ -181,7 +181,7 @@ def save_tasks(tasks: list, database: str):
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for task in tasks:
-            writer.writerow({"name": task.name, "priority": task.priority, "id": task.id})
+            writer.writerow({"name": task.name, "priority": task.priority, "id": task.the_id})
 
     print("List of tasks saved.")
     sleep(1)
@@ -194,7 +194,7 @@ def load_tasks(database: str) -> list:
     with open(f"users/{database}.csv", newline="") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            tasks.append(Task(row["name"], int(row["priority"], int(row["id"]))))
+            tasks.append(Task(row["name"], int(row["priority"]), int(row["the_id"])))
 
     return tasks
 

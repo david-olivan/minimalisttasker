@@ -1,8 +1,8 @@
 class Task:
-    def __init__(self, name: str, priority: int, id: int):
+    def __init__(self, name: str, priority: int, the_id: int):
         self.name = name
         self.priority = priority
-        self.id = id
+        self.the_id = the_id
 
     def __str__(self):
         return f"Task: {self.name} \tPriority: {self.priority}"
@@ -24,9 +24,9 @@ class Task:
         self._priority = priority
 
     @property
-    def id(self):
-        return self._id
+    def the_id(self):
+        return self._the_id
 
-    @id.setter
-    def id(self, id: int):
-        self._id = id
+    @the_id.setter
+    def the_id(self, the_id: int):
+        self._the_id = the_id
