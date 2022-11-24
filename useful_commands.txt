@@ -1,0 +1,2 @@
+black [file]
+python -m pipreqs.pipreqs --force /Para los requisitos
