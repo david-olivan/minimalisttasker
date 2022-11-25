@@ -1,4 +1,7 @@
-"""Module providing function to check str patterns"""
+"""
+An app that will help you keep track of those tasks that are importante to you
+without encouraging an endless list of tasks that never ned. Priorities included!
+"""
 import re
 import sys
 import csv
@@ -6,11 +9,9 @@ import os
 import argparse
 from time import sleep
 from tabulate import tabulate
-from lib.Task import Task
+from lib.helpers import Task
 
-
-APP_NAME = "The Minimalist Tasker"
-
+APP_NAME: str = "The Minimalist Tasker"
 
 def main():
     """
@@ -49,16 +50,18 @@ def main():
         accept_command(input("Introduce a command: "), tasks, db_name)
 
 
-def accept_command(cmd: str, tasks: list, database):
+def accept_command(cmd: str, tasks: list, database: str) -> None:
     """
     Get a command from the user and process it based on options
 
-    :param cmd: The command that the user typed
-    :cmd type: str
-    :param tasks: The list of tasks being worked on
-    :tasks type: list
-    :param database: The name of the current opened database
-    :database type: str
+    Parameters
+    ----------
+    cmd : str
+        The command that the user typed.
+    tasks : list[Task]
+        The list of tasks being worked on.
+    database : str
+        The name of the currently open database.
     """
     match cmd.strip().lower():
         case "exit":
@@ -135,12 +138,12 @@ def new_task(tasks: list) -> Task:
             print("Name is longer than 100 characters.")
 
 
-def remove_task(tasks: list) -> list:
+def remove_task(tasks: list) -> list[Task]:
     """
     Removes a given task from the list then returns the updated list
 
     :param tasks: The current list of tasks
-    :tasks type: list
+    :type tasks: list
     :return: The updated list of tasks sans the given task
     :rtype: list
     """
@@ -182,8 +185,8 @@ def sort_by_priority(lista):
     """
     Uses the sorted function to sort tasks by priority as a key
 
-    :param ls: The list to be sorted
-    :type ls: list
+    :param lista: The list to be sorted
+    :type lista: list
     :return: The sorted list
     :rtype: list
     """
@@ -193,6 +196,11 @@ def sort_by_priority(lista):
 def save_tasks(tasks: list, database: str):
     """
     Saves the files being worked on on the .csv database
+
+    :param tasks: The current list of tasks
+    :type tasks: list
+    :param database: The name of the database where the tasks ought to be saved
+    :type database: str
     """
     with open(f"users/{database}.csv", "w", newline="", encoding="utf-8") as csvfile:
         fieldnames = ["name", "priority", "id"]
@@ -210,25 +218,31 @@ def save_tasks(tasks: list, database: str):
 def load_tasks(database: str) -> list:
     """
     Opens the csv file, loads the tasks and return them as a list of Task objects
+
+    :param database: The name of the csv file that has been selected
+    :type database: str
+    :return: The list of tasks extracted from the database
+    :rtype: list
     """
     tasks = []
     with open(f"users/{database}.csv", newline="", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            tasks.append(Task(row["name"], int(row["priority"]), int(row["the_id"])))
-
+            tasks.append(Task(row["name"], int(row["priority"]), int(row["id"])))
     return tasks
 
 
-def new_screen(tasks: list, message: str = None):
+def new_screen(tasks: list, message: str = None) -> None:
     """
     Clears the screen, displays the tasks and the commands as well as an optional message.
     It serves as a way of reducing three lines to one for a lot of commands and options
 
-    :param tasks: The list of Task objects that is the available tasks
-    :type tasks: list
-    :param message: An optional message for the user
-    :type message: str
+    Parameters
+    ----------
+    tasks : list[Task]
+        The list of Task objects that is the available tasks.
+    message : str, default None
+        An optional message for the user.
     """
     clear_screen()
     print(get_title(APP_NAME))
@@ -320,7 +334,7 @@ def create_database(name: str):
     :type name: str
     """
     with open("users/" + name + ".csv", "w", newline="", encoding="utf-8") as csvfile:
-        fieldnames = ["name", "priority"]
+        fieldnames = ["name", "priority", "id"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 

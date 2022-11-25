@@ -1,3 +1,4 @@
+"""A class for modelling tasks"""
 class Task:
     """
     A class that contains the basic building blocks of a Task. Name, priority and an id.
@@ -14,7 +15,7 @@ class Task:
     def name(self) -> str:
         """
         :param self: The object
-        :self type: Task
+        :type self: Task
         :return: The name property
         :rtype: str
         """
@@ -24,9 +25,9 @@ class Task:
     def name(self, name: str):
         """
         :param self: The object
-        :self type: Task
+        :type self: Task
         :param name: The name description of the task
-        :name type: str
+        :type name: str
         """
         self._name = name
 
@@ -34,7 +35,7 @@ class Task:
     def priority(self) -> int:
         """
         :param self: The object
-        :self type: Task
+        :type self: Task
         :return: The priority property
         :rtype: int
         """
@@ -44,9 +45,9 @@ class Task:
     def priority(self, priority: int):
         """
         :param self: The object
-        :self type: Task
+        :type self: Task
         :param name: The priority of the task
-        :name type: int
+        :type name: int
         """
         self._priority = priority
 
@@ -54,7 +55,7 @@ class Task:
     def the_id(self) -> int:
         """
         :param self: The object
-        :self type: Task
+        :type self: Task
         :return: The id property
         :rtype: int
         """
@@ -64,8 +65,8 @@ class Task:
     def the_id(self, the_id: int):
         """
         :param self: The object
-        :self type: Task
+        :type self: Task
         :param name: The priority of the task
-        :name type: int
+        :type name: int
         """
         self._the_id = the_id
