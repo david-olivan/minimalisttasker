@@ -18,7 +18,31 @@ def main():
     The main function of the app
     """
     db_name = parse_arguments()
+    db_name = check_database(db_name)
 
+    tasks = load_tasks(db_name)
+
+    new_screen(tasks)
+
+    while True:
+        accept_command(input("Introduce a command: "), tasks, db_name)
+
+
+def check_database(db_name) -> str:
+    """
+    This function gets a database name and finds if there exists one or not and if so selects it.
+    If there isn't a database it creates a new one.
+
+    Parameters
+    ----------
+    db_name : str
+        The name to be verified
+
+    Returns
+    ----------
+    db_name : str
+        A verified name or a new name if no-database was the original string
+    """
     if db_name == "no-database":
         print("No path selected. Select a database.")
 
@@ -41,13 +65,7 @@ def main():
             create_database(db_name)
         else:
             sys.exit("Database name incorrect.")
-
-    tasks = load_tasks(db_name)
-
-    new_screen(tasks)
-
-    while True:
-        accept_command(input("Introduce a command: "), tasks, db_name)
+    return db_name
 
 
 def accept_command(cmd: str, tasks: list, database: str) -> None:
@@ -82,6 +100,9 @@ def accept_command(cmd: str, tasks: list, database: str) -> None:
                 new_screen(tasks, "The current tasks have been saved.")
             else:
                 new_screen(tasks, "Tasks have not been saved.")
+        case "modify":
+            tasks = modify_task(tasks)
+            new_screen(tasks, "The task priority has been modified.")
         case "remove":
             tasks = remove_task(tasks)
             new_screen(tasks, "The task has been removed.")
@@ -89,14 +110,60 @@ def accept_command(cmd: str, tasks: list, database: str) -> None:
             new_screen(tasks, "That is not a valid command.")
 
 
-def get_commands():
+def modify_task(tasks) -> list[Task]:
+    """
+    Allows the user to modify the priority of a task
+
+    Parameters
+    ----------
+    tasks : list[Task]
+        The current list of tasks.
+
+    Returns
+    ----------
+    tasks : list[Task]
+        The new list of tasks.
+    """
+    clear_screen()
+    print(get_title("Modify Task"))
+    display_tasks(tasks)
+
+    while True:
+        the_id = input("\nIntroduce the id of the task whose priority you want to modify: ").strip()
+        try:
+            the_id = int(the_id)
+        except ValueError:
+            print("The id is not a number.")
+        else:
+            for task in tasks:
+                if task.the_id == the_id:
+                    index = tasks.index(task)
+                    while True:
+                        try:
+                            new_priority = int(input("Introduce the new priority for the task: "))
+                        except ValueError:
+                            print("The new priority is not a number.")
+                        else:
+                            if 0 < new_priority < 6:
+                                modified_task = Task(task.name, new_priority, task.the_id)
+                                tasks.remove(tasks[index])
+                                tasks.append(modified_task)
+                                return tasks
+                            else:
+                                print("Priority is not between 1 and 5.")
+            print("No id was found.")
+
+
+def get_commands() -> str:
     """
     Displays all available commands that can be given to the program
 
-    :return: The list of commands appropriately formatted
-    :rtype: str
+    Returns
+    ----------
+    str
+        The list of commands with tab spaces between keywords.
     """
-    return "\nCommands:\t new\t save\t remove\t exit\n"
+    return "\nCommands:\t new\t save\t modify remove\t exit\n"
 
 
 def new_task(tasks: list) -> Task:
@@ -104,10 +171,15 @@ def new_task(tasks: list) -> Task:
     Creates a new task, checks that the name is not longer than 100 char
     and priority is an int 1-5 and returns it
 
-    :param tasks: The list of tasks currently available
-    :type tasks: list
-    :return: A newly created task using the Task object
-    :rtype: Task
+    Parameters
+    ----------
+    tasks : list[Task]
+        The list of tasks currently available.
+
+    Returns
+    ----------
+    Task
+        A newly created task using the Task object.
     """
     clear_screen()
     print(get_title("New Task"))
@@ -142,10 +214,15 @@ def remove_task(tasks: list) -> list[Task]:
     """
     Removes a given task from the list then returns the updated list
 
-    :param tasks: The current list of tasks
-    :type tasks: list
-    :return: The updated list of tasks sans the given task
-    :rtype: list
+    Parameters
+    ----------
+    tasks : list[Task]
+        The current list of tasks.
+
+    Returns
+    ----------
+    tasks : list[Task]
+        The updated list of tasks sans the removed task.
     """
     clear_screen()
     print(get_title("Remove Task"))
@@ -166,13 +243,15 @@ def remove_task(tasks: list) -> list[Task]:
             print("No id was found.")
 
 
-def display_tasks(tasks: list):
+def display_tasks(tasks: list) -> None:
     """
     Uses the list of Task objects to display available tasks for the user
     in order of priority with an index number
 
-    :param tasks: The list of Task objects with the tasks
-    :type tasks: list
+    Parameters
+    ----------
+    tasks : list[Task]
+        The list of Task objects with the current tasks.
     """
     desglosada = []
     for task in sort_by_priority(tasks):
@@ -181,14 +260,19 @@ def display_tasks(tasks: list):
     print(tabulate(desglosada, headers=["Id", "Priority", "Name"]))
 
 
-def sort_by_priority(lista):
+def sort_by_priority(lista) -> None:
     """
     Uses the sorted function to sort tasks by priority as a key
 
-    :param lista: The list to be sorted
-    :type lista: list
-    :return: The sorted list
-    :rtype: list
+    Parameters
+    ----------
+    list : list[Task]
+        The list to be sorted.
+
+    Returns
+    ----------
+    list[Task]
+        The list, sorted by priority.
     """
     return sorted(lista, key=lambda task: task.priority)
 
@@ -197,10 +281,12 @@ def save_tasks(tasks: list, database: str):
     """
     Saves the files being worked on on the .csv database
 
-    :param tasks: The current list of tasks
-    :type tasks: list
-    :param database: The name of the database where the tasks ought to be saved
-    :type database: str
+    Parameters
+    ----------
+    tasks : list[Task]
+        The current list of tasks.
+    database : str
+        The name of the database where the tasks ought to be saved
     """
     with open(f"users/{database}.csv", "w", newline="", encoding="utf-8") as csvfile:
         fieldnames = ["name", "priority", "id"]
@@ -215,14 +301,19 @@ def save_tasks(tasks: list, database: str):
     sleep(1)
 
 
-def load_tasks(database: str) -> list:
+def load_tasks(database: str) -> list[Task]:
     """
     Opens the csv file, loads the tasks and return them as a list of Task objects
 
-    :param database: The name of the csv file that has been selected
-    :type database: str
-    :return: The list of tasks extracted from the database
-    :rtype: list
+    Parameters
+    ----------
+    database : str
+        The name of the csv file that has been selected.
+
+    Returns
+    ----------
+    tasks : list[Task]
+        The list of tasks extracted from the database.
     """
     tasks = []
     with open(f"users/{database}.csv", newline="", encoding="utf-8") as csvfile:
@@ -256,10 +347,14 @@ def get_title(text: str) -> str:
     """
     Gets a text and formats it as a heading
 
-    :param text: The text to be formatted as a heading
-    :type text: str
-    :return: The three line string with the text as a heading
-    :rtype: str
+    Parameters:
+    text : str
+        The text to be formatted as an app heading
+
+    Returns
+    ----------
+    line1 + line2 + line3 : str
+        The three line string with the text as a heading.
     """
     line1 = "\t\t***" + ("*" * len(text)) + "***\n"
     line2 = "\t\t*  " + text.upper() + "  *\n"
@@ -268,7 +363,7 @@ def get_title(text: str) -> str:
     return line1 + line2 + line3
 
 
-def clear_screen():
+def clear_screen() -> None:
     """
     Clears the screen based on os without showing the os.system eeeevery time
     """
@@ -277,10 +372,13 @@ def clear_screen():
 
 def get_name() -> str:
     """
-    Gets an input from the user and verifies it as a valid name
+    Gets an input from the user and verifies it as a valid name following the conventions.
+    Rules are only letters, numbers, hyphens and underscores. No spaces.
 
-    :return: A string with the valid, verified name of the database
-    :rtype: str
+    Returns
+    ----------
+    name : str
+        A string with a valid, verified name according to conventions,
     """
     while True:
         # Ask user for a database name
@@ -299,10 +397,15 @@ def database_exists(name: str) -> bool:
     """
     Checks if a database exists in users/ folder
 
-    :param name: The name of the database
-    :type name: str
-    :return: Whether there is a database with that name or not
-    :rtype: bool
+    Parameters
+    ----------
+    name : str
+        The name of the database to be checked.
+
+    Returns
+    ----------
+    True/False : bool
+        Whether there is a database with that name or not.
     """
     if os.path.isfile(f"users/{name}.csv"):
         return True
@@ -315,10 +418,15 @@ def is_name_valid(name: str) -> bool:
     Checks if a given name is valid
     (i.e. only letters and numbers,underscores and hyphens permitted)
 
-    :param name: The name to be examined
-    :type name: str
-    :return: Whether the name is valid or not
-    :rtype: bool
+    Parameters
+    ----------
+    name : str
+        The name to be examined to see if it is valid.
+
+    Returns
+    ----------
+    True/False : bool
+        Whether the name is valid or not
     """
     if re.match(r"^[A-Za-z0-9_-]*$", name):
         return True
@@ -326,12 +434,14 @@ def is_name_valid(name: str) -> bool:
         return False
 
 
-def create_database(name: str):
+def create_database(name: str) -> None:
     """
     Creates a database with headers in users/ folder
 
-    :param name: The name of the new database
-    :type name: str
+    Parameters
+    ----------
+    name : str
+        The name of the new database to be created.
     """
     with open("users/" + name + ".csv", "w", newline="", encoding="utf-8") as csvfile:
         fieldnames = ["name", "priority", "id"]
@@ -343,8 +453,10 @@ def parse_arguments() -> str:
     """
     Parse arguments and return database name or lack thereof
 
-    :return: A string representing the database name or the fact that there isn't one.
-    :rtype: str
+    Returns
+    ----------
+    args.filename : str
+        A string representing the database name or the fact that there isn't one.
     """
     parser = argparse.ArgumentParser(
         prog="project.py", description="Manage all your projects and tasks."

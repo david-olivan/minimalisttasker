@@ -1,4 +1,6 @@
 black [file]
 python -m pipreqs.pipreqs --force //Para los requisitos
-pdoc ./demo.py --logo "https://placedog.net/300?random"
+
 pdoc demo.py --logo URL --favicon URL -d numpy -o docs
+
+pdoc project.py -d numpy --logo https://tinyurl.com/4j7dnwyt --favicon https://tinyurl.com/tskr2

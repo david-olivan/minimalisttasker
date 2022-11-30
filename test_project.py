@@ -13,3 +13,6 @@ def test_database_exists():
     assert database_exists("example") == True
     assert database_exists("davidjmalan") == False
     assert database_exists("jajajaja_joke") == False
+
+def test_get_title():
+    ...
