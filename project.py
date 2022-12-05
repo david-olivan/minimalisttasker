@@ -13,6 +13,7 @@ from lib.helpers import Task
 
 APP_NAME: str = "The Minimalist Tasker"
 
+
 def main():
     """
     The main function of the app
@@ -129,7 +130,9 @@ def modify_task(tasks) -> list[Task]:
     display_tasks(tasks)
 
     while True:
-        the_id = input("\nIntroduce the id of the task whose priority you want to modify: ").strip()
+        the_id = input(
+            "\nIntroduce the id of the task whose priority you want to modify: "
+        ).strip()
         try:
             the_id = int(the_id)
         except ValueError:
@@ -140,12 +143,16 @@ def modify_task(tasks) -> list[Task]:
                     index = tasks.index(task)
                     while True:
                         try:
-                            new_priority = int(input("Introduce the new priority for the task: "))
+                            new_priority = int(
+                                input("Introduce the new priority for the task: ")
+                            )
                         except ValueError:
                             print("The new priority is not a number.")
                         else:
                             if 0 < new_priority < 6:
-                                modified_task = Task(task.name, new_priority, task.the_id)
+                                modified_task = Task(
+                                    task.name, new_priority, task.the_id
+                                )
                                 tasks.remove(tasks[index])
                                 tasks.append(modified_task)
                                 return tasks

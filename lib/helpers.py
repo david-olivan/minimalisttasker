@@ -1,8 +1,11 @@
 """A class for modelling tasks"""
+
+
 class Task:
     """
     A class that contains the basic building blocks of a Task. Name, priority and an id.
     """
+
     def __init__(self, name: str, priority: int, the_id: int):
         self.name = name
         self.priority = priority

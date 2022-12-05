@@ -11,8 +11,17 @@ here are a few things, but ot too many, it's still a minimalist app ;), that The
 As part of the planning process for this project which file system for the database to store the tasks was considered, finally deciding on .csv files for the easiness in which they may be used for information that does not have a lot of volume. SQL-like databases were discarded since they sid not seem to add a lot to a project with few tasks and each task with very few bits of informstion. Thus, the time invrsted in taming a mlre complex file system was deemed more appropristely allocated to the myriad other things that had to be learnt and applied.
 If the database had sny tasks stored inside, they will be loaded onto a list made up pf Task objects (a class created for this project) and said list will be ordered and presented to the user by passing it to a dedicated function. Most of the functionally was slowly refactored out of main() and nto their own independent functions and the display_tasks() was one such change.
 
-### What if my newly created databae doesnt have any tasks?
+### What if my newly created databae doesn't have any tasks?
 Even though the example.csv file contains a number of tasks as examples of what the app can do, when a user creates a new database it will not be pipulated. That is not a problem, because one of the features is the creation of new tasks. When using this option the tittle st the top of the text within the terminal will change (using a function to maintain the handdrawn box around it) and the app will prompt the user for the name of the task and the priority the user wants to assign to it, checking that the name is not longer than a 100 characters and the prioritt is a nimber between 1 and 5, voth included, and letting the user know when these conditoons have not been met.
 
 ## SOME PACKAGES IT USES
+
+
 ## A CLASS JUST FOR THIS APP
+In order to handle the tasks in a way that allows for escalability a new class was created with setters, getters, an init method and a way of printing the task information. This, done at the beginning of the project, made it so much easier to add other properties such as the unique id when they were required later on.
+
+## CREATING THE DOCUMENTATIONS
+As part of the developing of this app, special care was put into documenting every function, method, their parameters and their returns. Docstrings were used throughout and the numpy notation system was checked so that it could be used to denote the parameters, their type and the returns of functions. That allowed for a quick documentations created in the ../docs/ folder using a module that was installed using pip called pdoc which generates an automated html documentation file.
+
+## FURTHER DEVELOPMENT 
+A project woild never be finished, especially one done without harddesdlines or external requirements . So there comes a point when, even though one could think of a dizen things dtill to do or to sdd to improve the app, one has yo decide to stop working on it and habd the or9ject in  now, if i cont8nued to wirk on it (and i might, as a learning experience beyond CS50) what would i do with it? that is he purpose of this section , to discuss where woild i take further development of this app.
