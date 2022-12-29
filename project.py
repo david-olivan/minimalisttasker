@@ -454,6 +454,7 @@ def create_database(name: str) -> None:
         fieldnames = ["name", "priority", "id"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
+        writer.writerow({"name": "Example task", "priority": 2, "id": 0})
 
 
 def parse_arguments() -> str:
